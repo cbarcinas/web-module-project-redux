@@ -2,6 +2,7 @@ import React from "react";
 import { useParams, useHistory } from "react-router-dom";
 
 import { connect } from "react-redux";
+import { deleteMovie } from "../actions/movieActions";
 
 const Movie = (props) => {
   const { id } = useParams();
@@ -9,6 +10,11 @@ const Movie = (props) => {
 
   const movies = props.movies;
   const movie = movies.find((movie) => movie.id === Number(id));
+
+  const deleteItem = () => {
+    props.deleteMovie(movie.id);
+    push("/movies");
+  };
 
   return (
     <div className="modal-page col">
@@ -55,6 +61,7 @@ const Movie = (props) => {
                     type="button"
                     className="m-2 btn btn-danger"
                     value="Delete"
+                    onClick={deleteItem}
                   />
                 </span>
               </section>
@@ -68,8 +75,15 @@ const Movie = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    movies: state.movies,
+    movies: state.movie.movies,
+    displayFavorites: state.favorites.displayFavorites,
   };
 };
 
-export default connect(mapStateToProps)(Movie);
+// when we use this method, it automatically wraps the functions
+// in a dispatch
+const mapActionsToProps = {
+  deleteMovie,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(Movie);
